@@ -1,0 +1,6 @@
+from setuptools import setup
+
+setup(name='icepack_fortran',
+      version='${icepack_fortran_VERSION}',
+      package_dir={'': '${CMAKE_CURRENT_SOURCE_DIR}'},
+      py_modules=['icepack_fortran'])

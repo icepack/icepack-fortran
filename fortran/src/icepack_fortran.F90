@@ -60,8 +60,8 @@ subroutine simulation_init(self, config_filename)
     ! looking for this attribute
     call set_argv
 
-    ! Import the Python simulation module
-    check_error(import_py(self%python_module, "simulation"))
+    ! Import the Python wrapper module
+    check_error(import_py(self%python_module, "icepack_fortran"))
 
     ! Pass the pathname of the config file to Python, from which it will
     ! initialize the simulation state
