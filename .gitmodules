@@ -1,0 +1,3 @@
+[submodule "fortran/src/forpy"]
+	path = fortran/src/forpy
+	url = https://github.com/ylikx/forpy.git
