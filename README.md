@@ -55,3 +55,4 @@ The following resources were helpful:
 
 * [forpy](https://ylikx.github.io/forpy/index.html): a complete Fortran wrapper for the CPython API.
 * [CMake and distutils](https://bloerg.net/2012/11/10/cmake-and-distutils.html): How to build a Python project using CMake.
+* [Modern CMake](https://cliutils.gitlab.io/modern-cmake/): Minimize agony from the build system.

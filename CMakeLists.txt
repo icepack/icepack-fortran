@@ -7,6 +7,7 @@ find_package(PythonLibs 3 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${icepack_fortran_BINARY_DIR}/include)
+INSTALL(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 enable_testing()
 add_subdirectory(fortran)
