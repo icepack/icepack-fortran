@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: icepack/firedrake:buster
+    steps:
+      - run:
+          working_directory: ~/
+          command: |
+            curl -O http://gmsh.info/bin/Linux/gmsh-4.3.0-Linux64.tgz
+            tar xvf gmsh-4.3.0-Linux64.tgz
+            git clone https://github.com/icepack/icepack
+      - run:
+          working_directory: ~/gmsh-4.3.0-Linux64
+          command: |
+            sudo apt-get install -yq libglu1-mesa libxcursor1 libxinerama1
+            sudo cp bin/gmsh /usr/local/bin
+      - run:
+          working_directory: ~/icepack
+          command: pip3 install -e .
+      - checkout
+      - run:
+          command: |
+            git submodule init
+            git submodule update
+      - run:
+          command: |
+            mkdir build
+            cd build
+            cmake ..
+            make
+            make test
