@@ -18,6 +18,7 @@ contains
     procedure :: initialize => simulation_init
     procedure :: destroy => simulation_destroy
     procedure :: get_mesh_coordinates => simulation_get_mesh_coordinates
+    procedure :: get_mesh_cells => simulation_get_mesh_cells
     procedure :: get_velocity => simulation_get_velocity
     procedure :: get_thickness => simulation_get_thickness
     procedure :: get_accumulation_rate => simulation_get_accumulation_rate
@@ -135,6 +136,27 @@ subroutine simulation_get_mesh_coordinates(self, coordinates)
     real(kind=real64), dimension(:,:), pointer, intent(out) :: coordinates
 
     call get_vector_field(self, "mesh_coordinates", coordinates)
+end subroutine
+
+
+subroutine simulation_get_mesh_cells(self, cells)
+    ! Arguments
+    class(simulation), intent(in) :: self
+    integer, dimension(:,:), pointer, intent(out) :: cells
+
+    ! Local variables
+    type(tuple) :: args
+    type(object) :: obj
+    type(ndarray) :: array
+
+    check_error(tuple_create(args, 1))
+    check_error(args%setitem(0, self%state))
+    check_error(call_py(obj, self%python_module, "get_mesh_cells", args))
+    check_error(cast(array, obj))
+    check_error(array%get_data(cells, 'C'))
+
+    call args%destroy
+    call obj%destroy
 end subroutine
 
 

@@ -85,6 +85,11 @@ def get_mesh_coordinates(fields):
     return fields['velocity'].ufl_domain().coordinates.dat.data_ro
 
 
+def get_mesh_cells(state):
+    print('Accessing mesh cells!')
+    return state['velocity'].ufl_domain().coordinates.cell_node_map().values
+
+
 def get_velocity(fields):
     print('Accessing velocity data!')
     return fields['velocity'].dat.data_ro

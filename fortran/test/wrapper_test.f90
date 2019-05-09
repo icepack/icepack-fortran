@@ -13,6 +13,7 @@ implicit none
 
     ! Simulation object and pointers to field data
     type(simulation) :: s
+    integer, dimension(:,:), pointer :: cells
     real(kind=real64), dimension(:,:), pointer :: coordinates, velocity
     real(kind=real64), dimension(:), pointer :: thickness, accumulation, melt
 
@@ -25,6 +26,12 @@ implicit none
     call get_command_argument(1, cmdline_arg)
 
     call s%initialize(cmdline_arg)
+
+    call s%get_mesh_cells(cells)
+    write(*, *) size(cells, 1), size(cells, 2)
+    write(*, *) cells(1, 1), cells(2, 1), cells(3, 1)
+    write(*, *) cells(1, 2), cells(2, 2), cells(3, 2)
+    write(*, *) cells(1, 3), cells(2, 3), cells(3, 3)
 
     call s%get_mesh_coordinates(coordinates)
     write(*, *) size(coordinates, 1), size(coordinates, 2)
