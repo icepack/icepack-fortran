@@ -1,4 +1,4 @@
-# icepack-fortran
+# icepack-fortran [![CircleCI](https://circleci.com/gh/icepack/icepack-fortran.svg?style=svg)](https://circleci.com/gh/icepack/icepack-fortran)
 
 This package contains a Fortran wrapper for some of the functionality of the glacier flow modeling library [icepack](https://github.com/icepack/icepack).
 The purpose of this package is to enable coupling of icepack, which is written in Python, to ocean circulation models, which are typically written in Fortran.

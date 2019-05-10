@@ -80,9 +80,9 @@ def prognostic_solve(state, dt):
     return state
 
 
-def get_mesh_coordinates(fields):
+def get_mesh_coordinates(state):
     print('Accessing mesh coordinates!')
-    return fields['velocity'].ufl_domain().coordinates.dat.data_ro
+    return state['velocity'].ufl_domain().coordinates.dat.data_ro
 
 
 def get_mesh_cells(state):
@@ -90,21 +90,21 @@ def get_mesh_cells(state):
     return state['velocity'].ufl_domain().coordinates.cell_node_map().values
 
 
-def get_velocity(fields):
+def get_velocity(state):
     print('Accessing velocity data!')
-    return fields['velocity'].dat.data_ro
+    return state['velocity'].dat.data_ro
 
 
-def get_thickness(fields):
+def get_thickness(state):
     print('Accessing thickness data!')
-    return fields['thickness'].dat.data_ro
+    return state['thickness'].dat.data_ro
 
 
-def get_accumulation_rate(fields):
+def get_accumulation_rate(state):
     print ('Accessing accumulation rate data!')
-    return fields['accumulation_rate'].dat.data_ro
+    return state['accumulation_rate'].dat.data_ro
 
 
-def get_melt_rate(fields):
+def get_melt_rate(state):
     print('Accessing melt rate data!')
-    return fields['melt_rate'].dat.data_ro
+    return state['melt_rate'].dat.data_ro
