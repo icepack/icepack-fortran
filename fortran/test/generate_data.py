@@ -2,8 +2,8 @@ import os
 import sys
 import json
 import numpy as np
+import rasterio
 import icepack
-import icepack.grid, icepack.grid.arcinfo
 from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
                                gravity as g, glen_flow_law as n)
 
@@ -39,15 +39,19 @@ def main(directory):
             data['a'][i, j] = 0.0
             data['m'][i, j] = 0.0
 
+    transform = rasterio.transform.from_origin(-dx, (m + 1) * dx, dx, dx)
+
     for name in fields:
-        field = icepack.grid.GridData(origin, dx, data[name],
-                                      missing_data_value=-2e9)
-        filename = os.path.join(directory, name + '.txt')
-        icepack.grid.arcinfo.write(filename, field, -2e9)
+        field = data[name]
+        filename = os.path.join(directory, name + '.tif')
+        with rasterio.open(filename, 'w', driver='GTiff',
+                height=m + 3, width=m + 3, count=1, dtype=field.dtype,
+                transform=transform) as dataset:
+            dataset.write(np.flipud(data[name]), indexes=1)
 
     config = {'mesh': 'mesh.msh', 'dirichlet_ids': [4], 'side_wall_ids': [1, 3],
-              'thickness': 'h.txt', 'accumulation': 'a.txt', 'melt': 'm.txt',
-              'velocity_x': 'u.txt', 'velocity_y': 'v.txt'}
+              'thickness': 'h.tif', 'accumulation': 'a.tif', 'melt': 'm.tif',
+              'velocity_x': 'u.tif', 'velocity_y': 'v.tif'}
     with open(os.path.join(directory, 'config.json'), 'w') as config_file:
         config_file.write(json.dumps(config, indent=4))
 

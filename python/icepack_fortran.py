@@ -1,9 +1,9 @@
 import os
 import json
 import numpy as np
+import rasterio
 import firedrake
 import icepack, icepack.models
-from icepack.grid import arcinfo
 from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
                                gravity as g, glen_flow_law as n)
 
@@ -19,18 +19,18 @@ def init(config_filename):
     Q = firedrake.FunctionSpace(mesh, 'CG', 1)
     V = firedrake.VectorFunctionSpace(mesh, 'CG', 1)
 
-    thickness = arcinfo.read(os.path.join(path, config['thickness']))
+    thickness = rasterio.open(os.path.join(path, config['thickness']), 'r')
     h = icepack.interpolate(thickness, Q)
 
     T = 254.15
     A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
 
-    velocity_x = arcinfo.read(os.path.join(path, config['velocity_x']))
-    velocity_y = arcinfo.read(os.path.join(path, config['velocity_y']))
+    velocity_x = rasterio.open(os.path.join(path, config['velocity_x']), 'r')
+    velocity_y = rasterio.open(os.path.join(path, config['velocity_y']), 'r')
     u = icepack.interpolate((velocity_x, velocity_y), V)
 
-    accumulation = arcinfo.read(os.path.join(path, config['accumulation']))
-    melt = arcinfo.read(os.path.join(path, config['melt']))
+    accumulation = rasterio.open(os.path.join(path, config['accumulation']), 'r')
+    melt = rasterio.open(os.path.join(path, config['melt']), 'r')
     a = icepack.interpolate(accumulation, Q)
     m = icepack.interpolate(melt, Q)
 
