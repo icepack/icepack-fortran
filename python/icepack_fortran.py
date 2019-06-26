@@ -22,8 +22,15 @@ def init(config_filename):
     thickness = rasterio.open(os.path.join(path, config['thickness']), 'r')
     h = icepack.interpolate(thickness, Q)
 
+    bed = rasterio.open(os.path.join(path, config['bed']), 'r')
+    b = icepack.interpolate(bed, Q)
+
+    model = icepack.models.IceStream()
+    s = model.compute_surface(h=h, b=b)
+
     T = 254.15
     A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
+    C = firedrake.interpolate(firedrake.Constant(0), Q)
 
     velocity_x = rasterio.open(os.path.join(path, config['velocity_x']), 'r')
     velocity_y = rasterio.open(os.path.join(path, config['velocity_y']), 'r')
@@ -38,10 +45,13 @@ def init(config_filename):
         'velocity': u,
         'inflow_thickness': h.copy(deepcopy=True),
         'thickness': h,
+        'surface': s,
+        'bed': b,
         'accumulation_rate': a,
         'melt_rate': m,
         'fluidity': A,
-        'model': icepack.models.IceShelf(),
+        'friction': C,
+        'model': model,
         'dirichlet_ids': config['dirichlet_ids'],
         'side_wall_ids': config['side_wall_ids']
     }
@@ -51,8 +61,12 @@ def init(config_filename):
 
 
 def diagnostic_solve(state):
-    h, u = state['thickness'], state['velocity']
+    h = state['thickness']
+    s = state['surface']
+    b = state['bed']
+    u = state['velocity']
     A = state['fluidity']
+    C = state['friction']
 
     opts = {
         'dirichlet_ids': state['dirichlet_ids'],
@@ -61,7 +75,7 @@ def diagnostic_solve(state):
     }
 
     model = state['model']
-    u.assign(model.diagnostic_solve(u0=u, h=h, A=A, **opts))
+    u.assign(model.diagnostic_solve(u0=u, h=h, s=s, A=A, C=C, **opts))
 
     print('Diagnostic solve complete!')
     return state
@@ -75,6 +89,10 @@ def prognostic_solve(state, dt):
 
     model = state['model']
     h.assign(model.prognostic_solve(dt, h0=h, h_inflow=h_inflow, u=u, a=a))
+
+    b = state['bed']
+    s = state['surface']
+    s.assign(model.compute_surface(h=h, b=b))
 
     print('Prognostic solve complete!')
     return state
@@ -98,6 +116,16 @@ def get_velocity(state):
 def get_thickness(state):
     print('Accessing thickness data!')
     return state['thickness'].dat.data_ro
+
+
+def get_surface(state):
+    print('Accessing surface data!')
+    return state['surface'].dat.data_ro
+
+
+def get_friction(state):
+    print('Accessing friction data!')
+    return state['friction'].dat.data_ro
 
 
 def get_accumulation_rate(state):

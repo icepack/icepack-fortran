@@ -21,6 +21,8 @@ contains
     procedure :: get_mesh_cells => simulation_get_mesh_cells
     procedure :: get_velocity => simulation_get_velocity
     procedure :: get_thickness => simulation_get_thickness
+    procedure :: get_surface => simulation_get_surface
+    procedure :: get_friction => simulation_get_friction
     procedure :: get_accumulation_rate => simulation_get_accumulation_rate
     procedure :: get_melt_rate => simulation_get_melt_rate
     procedure :: diagnostic_solve => simulation_diagnostic_solve
@@ -175,6 +177,24 @@ subroutine simulation_get_thickness(self, thickness)
     real(kind=real64), dimension(:), pointer, intent(out) :: thickness
 
     call get_scalar_field(self, "thickness", thickness)
+end subroutine
+
+
+subroutine simulation_get_surface(self, surface)
+    ! Arguments
+    class(simulation), intent(in) :: self
+    real(kind=real64), dimension(:), pointer, intent(out) :: surface
+
+    call get_scalar_field(self, "surface", surface)
+end subroutine
+
+
+subroutine simulation_get_friction(self, friction)
+    ! Arguments
+    class(simulation), intent(in) :: self
+    real(kind=real64), dimension(:), pointer, intent(out) :: friction
+
+    call get_scalar_field(self, "friction", friction)
 end subroutine
 
 

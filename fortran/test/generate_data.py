@@ -8,7 +8,7 @@ from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
                                gravity as g, glen_flow_law as n)
 
 def main(directory):
-    fields = ['u', 'v', 'h', 'a', 'm']
+    fields = ['u', 'v', 'h', 'b', 'a', 'm']
 
     L = 20e3
     m = 128
@@ -19,6 +19,7 @@ def main(directory):
 
     u0 = 100.0
     h0, dh = 500.0, 100.0
+    b0 = -1000.0
     T = 254.15
 
     def u(x, y):
@@ -35,6 +36,7 @@ def main(directory):
             data['u'][i, j] = u(x, y)
             data['v'][i, j] = 0.0
             data['h'][i, j] = h0 - dh * x / L
+            data['b'][i, j] = b0
             # TODO: Put in sensible values
             data['a'][i, j] = 0.0
             data['m'][i, j] = 0.0
@@ -50,7 +52,8 @@ def main(directory):
             dataset.write(np.flipud(data[name]), indexes=1)
 
     config = {'mesh': 'mesh.msh', 'dirichlet_ids': [4], 'side_wall_ids': [1, 3],
-              'thickness': 'h.tif', 'accumulation': 'a.tif', 'melt': 'm.tif',
+              'thickness': 'h.tif', 'bed': 'b.tif',
+              'accumulation': 'a.tif', 'melt': 'm.tif',
               'velocity_x': 'u.tif', 'velocity_y': 'v.tif'}
     with open(os.path.join(directory, 'config.json'), 'w') as config_file:
         config_file.write(json.dumps(config, indent=4))

@@ -15,7 +15,8 @@ implicit none
     type(simulation) :: s
     integer, dimension(:,:), pointer :: cells
     real(kind=real64), dimension(:,:), pointer :: coordinates, velocity
-    real(kind=real64), dimension(:), pointer :: thickness, accumulation, melt
+    real(kind=real64), dimension(:), pointer :: thickness, surface, &
+        friction, accumulation, melt
 
     num_cmdline_args = command_argument_count()
     if (num_cmdline_args /= 1) then
@@ -44,6 +45,14 @@ implicit none
     call s%get_thickness(thickness)
     write(*, *) size(thickness)
     write(*, *) thickness(1)
+
+    call s%get_surface(surface)
+    write(*, *) size(surface)
+    write(*, *) surface(1)
+
+    call s%get_friction(friction)
+    write(*, *) size(friction)
+    write(*, *) friction(1)
 
     call s%diagnostic_solve
 
