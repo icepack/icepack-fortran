@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: icepack/firedrake:buster
+      - image: icepack/firedrake-python3.7:0.1.0
     steps:
       - run:
           working_directory: ~/
@@ -14,7 +14,7 @@ jobs:
       - run:
           working_directory: ~/gmsh-4.3.0-Linux64
           command: |
-            sudo apt-get install -yq libglu1-mesa libxcursor1 libxinerama1
+            sudo apt-get install -yq libglu1-mesa libxcursor1 libxft2 libxinerama1
             sudo cp bin/gmsh /usr/local/bin
       - run:
           working_directory: ~/icepack
